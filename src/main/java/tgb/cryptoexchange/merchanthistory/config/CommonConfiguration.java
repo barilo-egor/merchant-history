@@ -51,7 +51,7 @@ public class CommonConfiguration {
     public DefaultErrorHandler defaultErrorHandler() {
         return new DefaultErrorHandler(
                 errorService::handle,
-                new FixedBackOff(0, 0)
+                new FixedBackOff(60000, 1)
         );
     }
 
