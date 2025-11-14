@@ -3,3 +3,9 @@ kafka:
   topic:
     merchant-details:
       receive: 'dev-merchant-details-receive-topic'
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+  jpa:
+    hibernate:
+      ddl-auto: create
