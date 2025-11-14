@@ -1,0 +1,5 @@
+kafka:
+  group-id: 'merchant-history-dev'
+  topic:
+    merchant-details:
+      receive: 'dev-merchant-details-receive-topic'
