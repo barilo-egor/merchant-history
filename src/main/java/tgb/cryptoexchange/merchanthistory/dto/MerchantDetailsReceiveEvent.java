@@ -1,20 +1,17 @@
-package tgb.cryptoexchange.merchanthistory.bean;
+package tgb.cryptoexchange.merchanthistory.dto;
 
-import jakarta.persistence.*;
-import lombok.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.Data;
+import org.apache.kafka.common.serialization.Deserializer;
+import tgb.cryptoexchange.merchanthistory.exception.DeserializeEventException;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
-@Entity
 @Data
-public class MerchantHistory {
+public class MerchantDetailsReceiveEvent {
 
-    /**
-     * Уникальный идентификатор истории в сервисе merchant-history
-     */
-    @Id
-    @GeneratedValue
-    private Long id;
 
     /**
      * Идентификатор сделки, по которому были запрошены реквизиты
@@ -65,4 +62,20 @@ public class MerchantHistory {
      * Реквизиты
      */
     private String details;
+
+    public static class KafkaDeserializer implements Deserializer<MerchantDetailsReceiveEvent> {
+
+        private final ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule());
+
+        @Override
+        public MerchantDetailsReceiveEvent deserialize(String topic, byte[] data) {
+            try {
+                if (data == null) return null;
+                return objectMapper.readValue(data, MerchantDetailsReceiveEvent.class);
+            } catch (Exception e) {
+                throw new DeserializeEventException("Error occurred while deserializer value: " + new String(data, StandardCharsets.UTF_8), e);
+            }
+        }
+    }
 }
