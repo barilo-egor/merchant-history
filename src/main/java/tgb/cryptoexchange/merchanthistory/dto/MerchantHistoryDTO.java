@@ -1,5 +1,7 @@
 package tgb.cryptoexchange.merchanthistory.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import lombok.Data;
 import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 
@@ -26,6 +28,7 @@ public class MerchantHistoryDTO {
     /**
      * Дата и время получения реквизитов
      */
+    @JsonSerialize(using = InstantSerializer.class)
     private Instant createdAt;
 
     /**
