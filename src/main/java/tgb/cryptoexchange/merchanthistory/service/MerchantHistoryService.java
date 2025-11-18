@@ -5,6 +5,8 @@ import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
+import java.util.Optional;
+
 @Service
 public class MerchantHistoryService {
 
@@ -27,5 +29,9 @@ public class MerchantHistoryService {
         merchantHistory.setMethod(event.getMethod());
         merchantHistory.setDetails(event.getDetails());
         merchantHistoryRepository.save(merchantHistory);
+    }
+
+    public Optional<MerchantHistory> findByMerchantOrderId(String merchantOrderId) {
+        return merchantHistoryRepository.findByMerchantOrderId(merchantOrderId);
     }
 }

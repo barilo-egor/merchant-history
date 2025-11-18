@@ -11,9 +11,11 @@ import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MerchantHistoryServiceTest {
@@ -56,5 +58,20 @@ class MerchantHistoryServiceTest {
                 () -> assertEquals(method, actual.getMethod()),
                 () -> assertEquals(details, actual.getDetails())
         );
+    }
+
+    @CsvSource({
+            "1255,b9519d18-7ecf-47fd-ae74-0eca84d8656e",
+            "647457,869b6ba4-fc34-4df5-910c-cf69a05027b9"
+    })
+    @ParameterizedTest
+    void findByMerchantOrderIdShouldCallRepositoryMethod(Long id, String orderId) {
+        MerchantHistory merchantHistory = new MerchantHistory();
+        merchantHistory.setId(id);
+        when(merchantHistoryRepository.findByMerchantOrderId(orderId)).thenReturn(Optional.of(merchantHistory));
+        Optional<MerchantHistory> maybeHistory = merchantHistoryService.findByMerchantOrderId(orderId);
+        assertTrue(maybeHistory.isPresent());
+        MerchantHistory actual = maybeHistory.get();
+        assertEquals(id, actual.getId());
     }
 }
