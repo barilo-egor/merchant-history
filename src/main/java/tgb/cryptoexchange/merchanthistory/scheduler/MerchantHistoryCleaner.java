@@ -1,0 +1,40 @@
+package tgb.cryptoexchange.merchanthistory.scheduler;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
+import tgb.cryptoexchange.merchanthistory.service.MerchantHistoryService;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+
+@Service
+@Slf4j
+public class MerchantHistoryCleaner {
+
+    private final MerchantHistoryService merchantHistoryService;
+
+    public MerchantHistoryCleaner(MerchantHistoryService merchantHistoryService) {
+        this.merchantHistoryService = merchantHistoryService;
+    }
+
+    @Scheduled(cron = "0 0 03 * * *")
+    public void cleanMerchantHistory() {
+        List<MerchantHistory> merchantHistories = merchantHistoryService.findByCreatedAtBefore(
+                LocalDateTime.now().minusWeeks(2).atZone(ZoneId.systemDefault()).toInstant()
+        );
+        if (merchantHistories.isEmpty()) {
+            return;
+        }
+        log.debug("Было найдено {} историй мерчантов для автоматического удаления.", merchantHistories.size());
+        for (MerchantHistory merchantHistory : merchantHistories) {
+            try {
+                merchantHistoryService.delete(merchantHistory);
+            } catch (Exception e) {
+                log.error("Ошибка при удалении истории id={}: {}", merchantHistory.getId(), e.getMessage(), e);
+            }
+        }
+    }
+}
