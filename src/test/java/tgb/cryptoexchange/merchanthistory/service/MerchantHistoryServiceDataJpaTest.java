@@ -1,5 +1,6 @@
 package tgb.cryptoexchange.merchanthistory.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,6 +26,11 @@ class MerchantHistoryServiceDataJpaTest {
 
     @Autowired
     private MerchantHistoryRepository merchantHistoryRepository;
+
+    @BeforeEach
+    void setUp() {
+        merchantHistoryRepository.deleteAll();
+    }
 
     @Test
     void findAllShouldReturnEmptyListIfNoRecords() {
