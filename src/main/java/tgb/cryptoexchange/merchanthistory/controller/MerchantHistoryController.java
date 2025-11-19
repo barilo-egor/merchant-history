@@ -15,7 +15,7 @@ import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryRequest;
 import tgb.cryptoexchange.merchanthistory.service.MerchantHistoryService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/merchant-history")
 public class MerchantHistoryController extends ApiController {
 
     private final MerchantHistoryService merchantHistoryService;
