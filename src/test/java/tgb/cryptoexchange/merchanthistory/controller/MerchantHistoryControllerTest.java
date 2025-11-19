@@ -49,7 +49,7 @@ class MerchantHistoryControllerTest {
         when(page.getContent()).thenReturn(new ArrayList<>());
         when(page.getTotalElements()).thenReturn(0L);
         when(merchantHistoryService.findAll(any(), any())).thenReturn(page);
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/merchant-history"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data").isArray())
@@ -68,7 +68,7 @@ class MerchantHistoryControllerTest {
         when(merchantHistoryService.findAll(any(), any())).thenReturn(page);
         ArgumentCaptor<MerchantHistoryRequest> requestCaptor = ArgumentCaptor.forClass(MerchantHistoryRequest.class);
         ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
-        mockMvc.perform(get("/")
+        mockMvc.perform(get("/merchant-history")
                 .queryParam("pageNumber", String.valueOf(pageNumber))
                 .queryParam("pageSize", String.valueOf(pageSize))
                 .queryParam("orderId", String.valueOf(orderId))
@@ -111,7 +111,7 @@ class MerchantHistoryControllerTest {
         when(merchantHistoryService.findAll(any(), any())).thenReturn(page);
         when(page.getContent()).thenReturn(histories);
         when(page.getTotalElements()).thenReturn((long) size);
-        ResultActions perform = mockMvc.perform(get("/"));
+        ResultActions perform = mockMvc.perform(get("/merchant-history"));
         for (int i = 0; i < size; i++) {
             perform.andExpect(status().isOk())
                     .andExpect(jsonPath("$.success").value(true))
