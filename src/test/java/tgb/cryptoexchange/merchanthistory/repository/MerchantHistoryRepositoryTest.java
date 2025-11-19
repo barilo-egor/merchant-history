@@ -1,5 +1,6 @@
 package tgb.cryptoexchange.merchanthistory.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,6 +17,11 @@ class MerchantHistoryRepositoryTest {
 
     @Autowired
     private MerchantHistoryRepository merchantHistoryRepository;
+
+    @BeforeEach
+    void setUp() {
+        merchantHistoryRepository.deleteAll();
+    }
 
     @Test
     void findByCreatedAtBeforeShouldReturnEmptyListIfNoRecords() {
@@ -35,7 +41,7 @@ class MerchantHistoryRepositoryTest {
     @Test
     void findByCreatedAtBeforeShouldReturnEmptyListIfMerchantHistoryEqualDate() {
         MerchantHistory merchantHistory = new MerchantHistory();
-        Instant createdAt = Instant.now().minus(1, ChronoUnit.DAYS);
+        Instant createdAt = Instant.now().minus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MILLIS);
         merchantHistory.setCreatedAt(createdAt);
         merchantHistory.setDealId(543L);
         merchantHistoryRepository.save(merchantHistory);
