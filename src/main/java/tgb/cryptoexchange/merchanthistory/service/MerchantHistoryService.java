@@ -1,13 +1,17 @@
 package tgb.cryptoexchange.merchanthistory.service;
 
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
+import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryDTO;
+import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryRequest;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MerchantHistoryService {
@@ -33,15 +37,20 @@ public class MerchantHistoryService {
         merchantHistoryRepository.save(merchantHistory);
     }
 
-    public Optional<MerchantHistory> findByMerchantOrderId(String merchantOrderId) {
-        return merchantHistoryRepository.findByMerchantOrderId(merchantOrderId);
-    }
-
     public List<MerchantHistory> findByCreatedAtBefore(Instant createdAt) {
         return merchantHistoryRepository.findByCreatedAtBefore(createdAt);
     }
 
-    public void delete(MerchantHistory merchantHistory) {
-        merchantHistoryRepository.delete(merchantHistory);
+    public void deleteAll(List<MerchantHistory> merchantHistory) {
+        merchantHistoryRepository.deleteAll(merchantHistory);
+    }
+
+    public Page<MerchantHistoryDTO> findAll(Pageable pageable, MerchantHistoryRequest request) {
+        return merchantHistoryRepository.findAll(
+                (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                        request.toPredicates(root, criteriaBuilder).toArray(new Predicate[0])
+                ),
+                pageable
+        ).map(MerchantHistoryDTO::fromEntity);
     }
 }

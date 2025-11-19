@@ -8,4 +8,4 @@ spring:
     url: jdbc:h2:mem:testdb
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop

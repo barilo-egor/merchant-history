@@ -18,8 +18,8 @@ class MerchantHistoryDTOTest {
             7654912,4256,bulba,2025-01-22T17:36:00Z,ALFA_TEAM,869b6ba4-fc34-4df5-910c-cf69a05027b9,12506,12506,CARD,Сбер 89879875723
             """)
     @ParameterizedTest
-    void fromShouldCopyObject(Long dealId, Long userId, String initiatorApp, Instant createdAt, String merchant, String merchantOrderId,
-                              Integer requestedAmount, Integer merchantAmount, String method, String details) {
+    void fromEntityShouldCopyObject(Long dealId, Long userId, String initiatorApp, Instant createdAt, String merchant, String merchantOrderId,
+                                    Integer requestedAmount, Integer merchantAmount, String method, String details) {
         MerchantHistory merchantHistory = new MerchantHistory();
         merchantHistory.setDealId(dealId);
         merchantHistory.setUserId(userId);
@@ -31,7 +31,7 @@ class MerchantHistoryDTOTest {
         merchantHistory.setMerchantAmount(merchantAmount);
         merchantHistory.setMethod(method);
         merchantHistory.setDetails(details);
-        MerchantHistoryDTO dto = MerchantHistoryDTO.from(merchantHistory);
+        MerchantHistoryDTO dto = MerchantHistoryDTO.fromEntity(merchantHistory);
         assertEquals(dealId, dto.getDealId());
         assertEquals(userId, dto.getUserId());
         assertEquals(initiatorApp, dto.getInitiatorApp());
