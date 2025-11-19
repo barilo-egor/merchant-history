@@ -61,7 +61,7 @@ public class MerchantHistoryDTO {
      */
     private String details;
 
-    public static MerchantHistoryDTO from(MerchantHistory merchantHistory) {
+    public static MerchantHistoryDTO fromEntity(MerchantHistory merchantHistory) {
         MerchantHistoryDTO dto = new MerchantHistoryDTO();
         dto.setDealId(merchantHistory.getDealId());
         dto.setUserId(merchantHistory.getUserId());

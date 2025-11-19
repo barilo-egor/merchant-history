@@ -5,10 +5,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-class MerchantHistoryResponseTest {
+class MerchantHistoriesResponseTest {
 
     @CsvSource(textBlock = """
             15155
@@ -18,6 +21,8 @@ class MerchantHistoryResponseTest {
     void merchantHistoryShouldConstructWithMerchantHistoryData(Long dealId) {
         MerchantHistoryDTO dto = new MerchantHistoryDTO();
         dto.setDealId(dealId);
-        assertEquals(dto, new MerchantHistoryResponse(dto).getData());
+        List<MerchantHistoryDTO> list = new ArrayList<>();
+        list.add(dto);
+        assertEquals(dto, new MerchantHistoriesResponse(list).getData().getFirst());
     }
 }

@@ -29,7 +29,7 @@ class MerchantHistoryCleanerTest {
     void cleanMerchantHistoryShouldSkipIfNoHistories() {
         when(merchantHistoryService.findByCreatedAtBefore(any())).thenReturn(new ArrayList<>());
         merchantHistoryCleaner.cleanMerchantHistory();
-        verify(merchantHistoryService, times(0)).delete(any());
+        verify(merchantHistoryService, times(0)).deleteAll(any());
     }
 
     @ValueSource(ints = {1, 5, 10})
@@ -43,20 +43,6 @@ class MerchantHistoryCleanerTest {
         }
         when(merchantHistoryService.findByCreatedAtBefore(any())).thenReturn(merchantHistoryList);
         merchantHistoryCleaner.cleanMerchantHistory();
-        verify(merchantHistoryService, times(size)).delete(any());
-    }
-
-    @Test
-    void cleanMerchantHistoryShouldDeleteAllMerchantHistories1() {
-        List<MerchantHistory> merchantHistoryList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            MerchantHistory merchantHistory = new MerchantHistory();
-            merchantHistory.setId((long) i);
-            merchantHistoryList.add(merchantHistory);
-        }
-        when(merchantHistoryService.findByCreatedAtBefore(any())).thenReturn(merchantHistoryList);
-        doThrow(RuntimeException.class).when(merchantHistoryService).delete(any());
-        merchantHistoryCleaner.cleanMerchantHistory();
-        verify(merchantHistoryService, times(5)).delete(any());
+        verify(merchantHistoryService).deleteAll(merchantHistoryList);
     }
 }

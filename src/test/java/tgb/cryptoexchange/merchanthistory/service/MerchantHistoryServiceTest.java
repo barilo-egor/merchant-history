@@ -1,5 +1,6 @@
 package tgb.cryptoexchange.merchanthistory.service;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -11,11 +12,13 @@ import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
-import java.util.Optional;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MerchantHistoryServiceTest {
@@ -60,18 +63,20 @@ class MerchantHistoryServiceTest {
         );
     }
 
-    @CsvSource({
-            "1255,b9519d18-7ecf-47fd-ae74-0eca84d8656e",
-            "647457,869b6ba4-fc34-4df5-910c-cf69a05027b9"
-    })
-    @ParameterizedTest
-    void findByMerchantOrderIdShouldCallRepositoryMethod(Long id, String orderId) {
-        MerchantHistory merchantHistory = new MerchantHistory();
-        merchantHistory.setId(id);
-        when(merchantHistoryRepository.findByMerchantOrderId(orderId)).thenReturn(Optional.of(merchantHistory));
-        Optional<MerchantHistory> maybeHistory = merchantHistoryService.findByMerchantOrderId(orderId);
-        assertTrue(maybeHistory.isPresent());
-        MerchantHistory actual = maybeHistory.get();
-        assertEquals(id, actual.getId());
+    @Test
+    void findByCreatedAtBeforeShouldCallRepositoryMethod() {
+        Instant now = Instant.now();
+        merchantHistoryService.findByCreatedAtBefore(now);
+        verify(merchantHistoryRepository).findByCreatedAtBefore(now);
     }
+
+    @Test
+    void deleteAllShouldCallRepositoryMethod() {
+        List<MerchantHistory> merchantHistoryList = new ArrayList<>();
+        merchantHistoryList.add(new MerchantHistory());
+        merchantHistoryService.deleteAll(merchantHistoryList);
+        verify(merchantHistoryRepository).deleteAll(merchantHistoryList);
+    }
+
+
 }
