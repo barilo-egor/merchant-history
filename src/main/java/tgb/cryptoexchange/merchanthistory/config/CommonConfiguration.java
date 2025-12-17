@@ -10,6 +10,8 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.backoff.FixedBackOff;
 import tgb.cryptoexchange.merchanthistory.dto.DetailsReceiveMonitorDTO;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
@@ -18,6 +20,8 @@ import tgb.cryptoexchange.merchanthistory.error.MerchantDetailsReceiveErrorServi
 import java.util.Map;
 
 @Configuration
+@EnableAsync
+@EnableScheduling
 public class CommonConfiguration {
 
     private final KafkaProperties kafkaProperties;
