@@ -6,7 +6,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
-import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 
 import java.time.Instant;
 import java.util.ArrayList;

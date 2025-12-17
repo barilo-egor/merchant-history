@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

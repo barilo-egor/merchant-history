@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.service.MerchantHistoryService;
 
 import java.util.ArrayList;

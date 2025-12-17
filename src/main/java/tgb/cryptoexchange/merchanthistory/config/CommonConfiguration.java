@@ -11,6 +11,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
+import tgb.cryptoexchange.merchanthistory.dto.DetailsReceiveMonitorDTO;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
 import tgb.cryptoexchange.merchanthistory.error.MerchantDetailsReceiveErrorService;
 
@@ -55,4 +56,21 @@ public class CommonConfiguration {
         );
     }
 
+    @Bean
+    public ConsumerFactory<String, DetailsReceiveMonitorDTO> monitorConsumerFactory() {
+        Map<String, Object> props = kafkaProperties.buildConsumerProperties();
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, DetailsReceiveMonitorDTO.KafkaDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, DetailsReceiveMonitorDTO> monitorKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, DetailsReceiveMonitorDTO> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(monitorConsumerFactory());
+        factory.setCommonErrorHandler(defaultErrorHandler());
+        return factory;
+    }
 }

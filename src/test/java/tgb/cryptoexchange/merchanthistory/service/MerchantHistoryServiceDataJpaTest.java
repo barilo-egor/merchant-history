@@ -7,9 +7,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryDTO;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryRequest;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
 import java.time.Instant;

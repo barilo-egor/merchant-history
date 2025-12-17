@@ -1,7 +1,9 @@
-package tgb.cryptoexchange.merchanthistory.bean;
+package tgb.cryptoexchange.merchanthistory.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.Data;
 
 import java.time.Instant;
 

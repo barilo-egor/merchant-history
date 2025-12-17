@@ -4,10 +4,10 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryDTO;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryRequest;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
 import java.time.Instant;

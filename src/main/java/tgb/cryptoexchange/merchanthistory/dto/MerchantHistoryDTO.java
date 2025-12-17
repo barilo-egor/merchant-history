@@ -3,7 +3,7 @@ package tgb.cryptoexchange.merchanthistory.dto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import lombok.Data;
-import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 
 import java.time.Instant;
 

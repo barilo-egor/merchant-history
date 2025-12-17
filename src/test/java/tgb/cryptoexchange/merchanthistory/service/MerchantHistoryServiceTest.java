@@ -8,8 +8,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tgb.cryptoexchange.merchanthistory.bean.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
 import java.time.Instant;
