@@ -13,7 +13,8 @@ public class DetailsReceiveMonitorTopicListener {
         this.detailsReceiveMonitorService = detailsReceiveMonitorService;
     }
 
-    @KafkaListener(topics = "${kafka.topic.merchant-details.monitor}", groupId = "${kafka.group-id}")
+    @KafkaListener(topics = "${kafka.topic.merchant-details.monitor}", groupId = "${kafka.group-id}",
+            containerFactory = "kafkaListenerContainerFactory")
     public void receive(DetailsReceiveMonitorDTO dto) {
         detailsReceiveMonitorService.save(dto);
     }
