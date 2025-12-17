@@ -13,6 +13,7 @@ import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
 import tgb.cryptoexchange.merchanthistory.repository.MerchantHistoryRepository;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -76,7 +77,7 @@ class MerchantHistoryServiceDataJpaTest {
     void findAllShouldReturnRecordIfCreatedAtMatch() {
         MerchantHistoryRequest request = new MerchantHistoryRequest();
         Instant now = Instant.now();
-        request.setCreatedAtFrom(now);
+        request.setCreatedAtFrom(now.minus(1, ChronoUnit.DAYS));
         MerchantHistory merchantHistory = new MerchantHistory();
         merchantHistory.setCreatedAt(now);
         merchantHistoryRepository.save(merchantHistory);
