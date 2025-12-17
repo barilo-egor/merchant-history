@@ -15,7 +15,8 @@ public class MerchantDetailsReceiveTopicListener {
         this.merchantHistoryService = merchantHistoryService;
     }
 
-    @KafkaListener(topics = "${kafka.topic.merchant-details.receive}", groupId = "${kafka.group-id}")
+    @KafkaListener(topics = "${kafka.topic.merchant-details.receive}", groupId = "${kafka.group-id}",
+            containerFactory = "monitorKafkaListenerContainerFactory")
     public void receive(MerchantDetailsReceiveEvent event) {
         merchantHistoryService.save(event);
     }
