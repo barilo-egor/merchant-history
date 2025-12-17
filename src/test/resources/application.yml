@@ -3,6 +3,7 @@ kafka:
   topic:
     merchant-details:
       receive: 'dev-merchant-details-receive-topic'
+      monitor: 'dev-merchant-details-monitor-topic'
 spring:
   datasource:
     url: jdbc:h2:mem:testdb

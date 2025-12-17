@@ -1,9 +1,15 @@
 spring:
   datasource:
-    username: ""
-    password: ""
-    driver-class-name: ""
-    url: ""
+    username:
+    password:
+    driver-class-name:
+    url:
   jpa:
     hibernate:
-      ddl-auto: ""
+      ddl-auto:
+kafka:
+  group-id:
+  topic:
+    merchant-details:
+      receive:
+      monitor:
