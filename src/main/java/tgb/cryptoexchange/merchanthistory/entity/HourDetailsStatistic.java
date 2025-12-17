@@ -35,6 +35,15 @@ public class HourDetailsStatistic {
 
     @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<HourMerchantReceiveStatistic> merchantStatistic = new ArrayList<>();
+    private List<HourMerchantReceiveStatistic> merchantStatistics = new ArrayList<>();
 
+    public void addDetailsReceiveDuration(DetailsReceiveDuration detailsReceiveDuration) {
+        detailsReceiveDuration.setHourDetailsStatistic(this);
+        this.amountDurations.add(detailsReceiveDuration);
+    }
+
+    public void addMerchantStatistic(HourMerchantReceiveStatistic merchantStatistic) {
+        merchantStatistic.setDetails(this);
+        this.merchantStatistics.add(merchantStatistic);
+    }
 }

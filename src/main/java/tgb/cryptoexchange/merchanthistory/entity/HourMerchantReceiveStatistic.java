@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,12 +27,18 @@ public class HourMerchantReceiveStatistic {
 
     private Duration avgDuration;
 
+    @Builder.Default
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<MerchantReceiveDuration> receiveDurations;
+    private List<MerchantReceiveDuration> receiveDurations = new ArrayList<>();
 
     private Integer count;
 
     private Integer successCount;
 
     private Integer errorCount;
+
+    public void addMerchantReceiveDuration(MerchantReceiveDuration duration) {
+        duration.setMerchantStatistic(this);
+        this.receiveDurations.add(duration);
+    }
 }
