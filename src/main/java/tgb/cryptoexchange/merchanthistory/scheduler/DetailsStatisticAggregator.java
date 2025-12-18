@@ -8,8 +8,8 @@ import tgb.cryptoexchange.merchanthistory.entity.*;
 import tgb.cryptoexchange.merchanthistory.entity.embeddable.AmountRange;
 import tgb.cryptoexchange.merchanthistory.service.DetailsReceiveMonitorService;
 import tgb.cryptoexchange.merchanthistory.service.HourDetailsStatisticService;
+import tgb.cryptoexchange.merchanthistory.service.StatisticCalculateService;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -25,10 +25,14 @@ public class DetailsStatisticAggregator {
 
     private final HourDetailsStatisticService hourDetailsStatisticService;
 
+    private final StatisticCalculateService statisticCalculateService;
+
     public DetailsStatisticAggregator(DetailsReceiveMonitorService detailsReceiveMonitorService,
-                                      HourDetailsStatisticService hourDetailsStatisticService) {
+                                      HourDetailsStatisticService hourDetailsStatisticService,
+                                      StatisticCalculateService statisticCalculateService) {
         this.detailsReceiveMonitorService = detailsReceiveMonitorService;
         this.hourDetailsStatisticService = hourDetailsStatisticService;
+        this.statisticCalculateService = statisticCalculateService;
     }
 
     @Scheduled(cron = "0 0 * * * *")
@@ -57,9 +61,11 @@ public class DetailsStatisticAggregator {
     private void buildStatistic(Instant startTime, List<DetailsReceiveMonitor> monitors) {
         HourDetailsStatistic hourDetailsStatistic = new HourDetailsStatistic();
         hourDetailsStatistic.setStartTime(startTime);
-        hourDetailsStatistic.setAvgDuration(getAverageDuration(monitors));
+        hourDetailsStatistic.setAvgDuration(statisticCalculateService.getAverageDuration(
+                monitors, DetailsReceiveMonitor::getStartTime, DetailsReceiveMonitor::getEndTime
+        ));
         hourDetailsStatistic.setCount(monitors.size());
-        hourDetailsStatistic.setSuccessCount((int) monitors.stream().filter(DetailsReceiveMonitor::isSuccess).count());
+        hourDetailsStatistic.setSuccessCount(statisticCalculateService.count(monitors, DetailsReceiveMonitor::isSuccess));
         buildDetailsReceiveDurations(hourDetailsStatistic, monitors);
         buildHourMerchantReceiveStatistics(hourDetailsStatistic, monitors);
         hourDetailsStatisticService.save(hourDetailsStatistic);
@@ -67,14 +73,15 @@ public class DetailsStatisticAggregator {
 
     private void buildDetailsReceiveDurations(HourDetailsStatistic hourDetailsStatistic,
                                               List<DetailsReceiveMonitor> monitors) {
-        Map<Integer, List<DetailsReceiveMonitor>> rangeMonitorsMap = monitors.stream()
-                .collect(Collectors.groupingBy(monitor -> monitor.getAmount() / 1000));
-        for (Map.Entry<Integer, List<DetailsReceiveMonitor>> entry : rangeMonitorsMap.entrySet()) {
-            int minAmount = entry.getKey() * 1000 + 1;
-            int maxAmount = minAmount + 1000;
+        Map<AmountRange, List<DetailsReceiveMonitor>> rangeMonitorsMap = statisticCalculateService.sortByAmountRange(
+                monitors, DetailsReceiveMonitor::getAmount
+        );
+        for (Map.Entry<AmountRange, List<DetailsReceiveMonitor>> entry : rangeMonitorsMap.entrySet()) {
             DetailsReceiveDuration detailsReceiveDuration = new DetailsReceiveDuration();
-            detailsReceiveDuration.setAmountRange(AmountRange.builder().minAmount(minAmount).maxAmount(maxAmount).build());
-            detailsReceiveDuration.setDuration(getAverageDuration(entry.getValue()));
+            detailsReceiveDuration.setAmountRange(entry.getKey());
+            detailsReceiveDuration.setDuration(statisticCalculateService.getAverageDuration(
+                    entry.getValue(), DetailsReceiveMonitor::getStartTime, DetailsReceiveMonitor::getEndTime
+            ));
             hourDetailsStatistic.addDetailsReceiveDuration(detailsReceiveDuration);
         }
     }
@@ -87,45 +94,30 @@ public class DetailsStatisticAggregator {
         for (Map.Entry<String, List<MerchantAttempt>> entry : merchantsAttempts.entrySet()) {
             HourMerchantReceiveStatistic merchantStatistic = new HourMerchantReceiveStatistic();
             merchantStatistic.setMerchant(entry.getKey());
-            merchantStatistic.setAvgDuration(getMerchantAttemptAverageDuration(entry.getValue()));
+            merchantStatistic.setAvgDuration(statisticCalculateService.getAverageDuration(
+                    entry.getValue(), MerchantAttempt::getStartTime, MerchantAttempt::getEndTime
+            ));
             merchantStatistic.setCount(entry.getValue().size());
-            merchantStatistic.setSuccessCount((int) entry.getValue().stream()
-                    .filter(MerchantAttempt::isSuccess)
-                    .count());
-            merchantStatistic.setErrorCount((int) entry.getValue().stream()
-                    .filter(MerchantAttempt::isError)
-                    .count());
+            merchantStatistic.setSuccessCount(statisticCalculateService.count(entry.getValue(), MerchantAttempt::isSuccess));
+            merchantStatistic.setSuccessCount(statisticCalculateService.count(entry.getValue(), MerchantAttempt::isError));
             buildMerchantReceiveDurations(merchantStatistic, entry.getValue());
             hourDetailsStatistic.addMerchantStatistic(merchantStatistic);
         }
     }
 
     private void buildMerchantReceiveDurations(HourMerchantReceiveStatistic merchantStatistic, List<MerchantAttempt> attempts) {
-        Map<Integer, List<MerchantAttempt>> rangeMerchantAttemptMap = attempts.stream()
-                .collect(Collectors.groupingBy(attempt -> attempt.getMonitor().getAmount() / 1000));
-        for (Map.Entry<Integer, List<MerchantAttempt>> mapEntry : rangeMerchantAttemptMap.entrySet()) {
-            int minAmount = mapEntry.getKey() * 1000 + 1;
-            int maxAmount = minAmount + 1000;
+        Map<AmountRange, List<MerchantAttempt>> rangeMerchantAttemptMap = statisticCalculateService.sortByAmountRange(
+                attempts, merchantAttempt -> merchantAttempt.getMonitor().getAmount()
+        );
+        for (Map.Entry<AmountRange, List<MerchantAttempt>> entry : rangeMerchantAttemptMap.entrySet()) {
             MerchantReceiveDuration merchantReceiveDuration = new MerchantReceiveDuration();
-            merchantReceiveDuration.setAmountRange(AmountRange.builder().minAmount(minAmount).maxAmount(maxAmount).build());
-            merchantReceiveDuration.setDuration(getMerchantAttemptAverageDuration(mapEntry.getValue()));
+            merchantReceiveDuration.setAmountRange(entry.getKey());
+            merchantReceiveDuration.setDuration(statisticCalculateService.getAverageDuration(
+                    entry.getValue(), MerchantAttempt::getStartTime, MerchantAttempt::getEndTime)
+            );
             merchantStatistic.addMerchantReceiveDuration(merchantReceiveDuration);
         }
     }
 
-    private Duration getMerchantAttemptAverageDuration(List<MerchantAttempt> merchantAttempts) {
-        double averageMillis = merchantAttempts.stream()
-                .mapToLong(t -> Duration.between(t.getStartTime(), t.getEndTime()).toMillis())
-                .average()
-                .orElse(0.0);
-        return Duration.ofMillis((long) averageMillis);
-    }
 
-    private Duration getAverageDuration(List<DetailsReceiveMonitor> monitors) {
-        double averageMillis = monitors.stream()
-                .mapToLong(t -> Duration.between(t.getStartTime(), t.getEndTime()).toMillis())
-                .average()
-                .orElse(0.0);
-        return Duration.ofMillis((long) averageMillis);
-    }
 }
