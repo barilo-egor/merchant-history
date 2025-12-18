@@ -24,15 +24,21 @@ public class StatisticCalculateService {
         return Duration.ofMillis((long) averageMillis);
     }
 
-    public <T> int count(List<T> list, Predicate<T> booleanFunction) {
-        return (int) list.stream().filter(booleanFunction).count();
+    public <T> int count(List<T> list, Predicate<T> predicate) {
+        return (int) list.stream().filter(predicate).count();
     }
 
     public <T> Map<AmountRange, List<T>> sortByAmountRange(List<T> list, ToIntFunction<T> amountFunction) {
         Map<AmountRange, List<T>> result = new HashMap<>();
         for (T t : list) {
-            int minAmount = (amountFunction.applyAsInt(t) / 1000) * 1000 + 1;
-            int maxAmount = minAmount + 1000;
+            int value = amountFunction.applyAsInt(t);
+            int minAmount;
+            if (value % 1000 == 0) {
+                minAmount = ((value / 1000) - 1) * 1000 + 1;
+            } else {
+                minAmount = (amountFunction.applyAsInt(t) / 1000) * 1000 + 1;
+            }
+            int maxAmount = minAmount + 999;
             result.computeIfAbsent(
                     AmountRange.builder().minAmount(minAmount).maxAmount(maxAmount).build(),
                     k -> new ArrayList<>()
