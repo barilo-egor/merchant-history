@@ -15,3 +15,5 @@ kafka:
       monitor:
     merchant-history:
       statistic:
+statistic:
+  cron: "0 0 * * * *"
