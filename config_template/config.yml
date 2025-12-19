@@ -13,3 +13,5 @@ kafka:
     merchant-details:
       receive:
       monitor:
+    merchant-history:
+      statistic:

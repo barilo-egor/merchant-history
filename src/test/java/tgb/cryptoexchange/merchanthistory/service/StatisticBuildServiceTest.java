@@ -1,11 +1,15 @@
 package tgb.cryptoexchange.merchanthistory.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.kafka.core.KafkaTemplate;
+import tgb.cryptoexchange.merchanthistory.dto.HourDetailsStatisticDTO;
+import tgb.cryptoexchange.merchanthistory.dto.HourDetailsStatisticMapper;
 import tgb.cryptoexchange.merchanthistory.entity.DetailsReceiveMonitor;
+import tgb.cryptoexchange.merchanthistory.entity.HourDetailsStatistic;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,13 +24,25 @@ import static org.mockito.Mockito.*;
 class StatisticBuildServiceTest {
 
     @Mock
+    private HourDetailsStatisticMapper mapper;
+
+    @Mock
     private HourDetailsStatisticService hourDetailsStatisticService;
 
     @Mock
     private DetailsReceiveMonitorService detailsReceiveMonitorService;
 
-    @InjectMocks
+    @Mock
+    private KafkaTemplate<String, HourDetailsStatisticDTO> statisticKafkaTemplate;
+
     private StatisticBuildService statisticBuildService;
+
+    @BeforeEach
+    void setUp() {
+        statisticBuildService = new StatisticBuildService(
+                "topicName", mapper, hourDetailsStatisticService, detailsReceiveMonitorService, statisticKafkaTemplate
+        );
+    }
 
     @Test
     void buildStatisticShouldSkipIfNoMonitors() {
@@ -52,6 +68,8 @@ class StatisticBuildServiceTest {
                     .build());
         }
         when(detailsReceiveMonitorService.findAllBeforeCurrentHour()).thenReturn(monitors);
+        when(hourDetailsStatisticService.create(any(), any())).thenReturn(new HourDetailsStatistic());
+        when(mapper.map(any(HourDetailsStatistic.class))).thenReturn(new HourDetailsStatisticDTO());
 
         statisticBuildService.buildStatistic();
 
@@ -60,6 +78,7 @@ class StatisticBuildServiceTest {
                                 .atZone(ZoneId.systemDefault()).toInstant()),
                         argThat(monitorsArg -> Objects.nonNull(monitorsArg) && monitorsArg.size() == 4)
                 );
+        verify(statisticKafkaTemplate).send(eq("topicName"), anyString(), any(HourDetailsStatisticDTO.class));
     }
 
     @Test
@@ -84,6 +103,8 @@ class StatisticBuildServiceTest {
                     .build());
         }
         when(detailsReceiveMonitorService.findAllBeforeCurrentHour()).thenReturn(monitors);
+        when(hourDetailsStatisticService.create(any(), any())).thenReturn(new HourDetailsStatistic());
+        when(mapper.map(any(HourDetailsStatistic.class))).thenReturn(new HourDetailsStatisticDTO());
 
         statisticBuildService.buildStatistic();
 
@@ -107,5 +128,7 @@ class StatisticBuildServiceTest {
                                 .atZone(ZoneId.systemDefault()).toInstant()),
                         argThat(monitorsArg -> Objects.nonNull(monitorsArg) && monitorsArg.size() == 1)
                 );
+        verify(statisticKafkaTemplate, times(4)).send(eq("topicName"), anyString(), any(HourDetailsStatisticDTO.class));
+        verify(detailsReceiveMonitorService).deleteAll(monitors);
     }
 }

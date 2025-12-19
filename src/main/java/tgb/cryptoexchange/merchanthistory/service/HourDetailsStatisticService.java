@@ -33,11 +33,11 @@ public class HourDetailsStatisticService {
         this.hourMerchantReceiveStatisticService = hourMerchantReceiveStatisticService;
     }
 
-    public void save(HourDetailsStatistic statistic) {
-        repository.save(statistic);
+    public HourDetailsStatistic save(HourDetailsStatistic statistic) {
+        return repository.save(statistic);
     }
 
-    public void create(Instant startTime, List<DetailsReceiveMonitor> monitors) {
+    public HourDetailsStatistic create(Instant startTime, List<DetailsReceiveMonitor> monitors) {
         HourDetailsStatistic hourDetailsStatistic = new HourDetailsStatistic();
         hourDetailsStatistic.setStartTime(startTime);
         hourDetailsStatistic.setAvgDuration(statisticCalculateService.getAverageDuration(
@@ -47,7 +47,7 @@ public class HourDetailsStatisticService {
         hourDetailsStatistic.setSuccessCount(statisticCalculateService.count(monitors, DetailsReceiveMonitor::isSuccess));
         buildDetailsReceiveDurations(hourDetailsStatistic, monitors);
         buildHourMerchantReceiveStatistics(hourDetailsStatistic, monitors);
-        save(hourDetailsStatistic);
+        return save(hourDetailsStatistic);
     }
 
     private void buildDetailsReceiveDurations(HourDetailsStatistic hourDetailsStatistic,
