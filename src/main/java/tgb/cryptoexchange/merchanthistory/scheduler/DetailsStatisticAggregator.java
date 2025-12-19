@@ -19,6 +19,10 @@ public class DetailsStatisticAggregator {
     @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void aggregate() {
-        statisticBuildService.buildStatistic();
+        try {
+            statisticBuildService.buildStatistic();
+        } catch (Exception e) {
+            log.error("Ошибка при попытке сформировать статистику: {}", e.getMessage(), e);
+        }
     }
 }

@@ -59,7 +59,13 @@ public class StatisticBuildService {
                 ));
         for (Map.Entry<Instant, List<DetailsReceiveMonitor>> entry : groupedByHour.entrySet()) {
             log.debug("Создание статистики для часа {}. Количество мониторов {}.", entry.getKey(), entry.getValue().size());
-            HourDetailsStatistic hourDetailsStatistic = hourDetailsStatisticService.create(entry.getKey(), entry.getValue());
+            HourDetailsStatistic hourDetailsStatistic;
+            try {
+                hourDetailsStatistic = hourDetailsStatisticService.create(entry.getKey(), entry.getValue());
+            } catch (Exception e) {
+                log.error("Ошибка при попытке сформировать статистику для часа {}: {}", entry.getKey(), e.getMessage(), e);
+                continue;
+            }
             statisticKafkaTemplate.send(topicName, UUID.randomUUID().toString(), mapper.map(hourDetailsStatistic));
             log.debug("Создание статистики для часа {} сформирована.", entry.getKey());
         }
