@@ -20,14 +20,4 @@ public class DetailsStatisticAggregator {
     public void aggregate() {
         statisticBuildService.buildStatistic();
     }
-
-
-
-
-
-
-
-
-
-
 }
