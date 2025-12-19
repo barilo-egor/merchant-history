@@ -43,7 +43,7 @@ public class HourDetailsStatistic {
     }
 
     public void addMerchantStatistic(HourMerchantReceiveStatistic merchantStatistic) {
-        merchantStatistic.setDetails(this);
+        merchantStatistic.setStatistic(this);
         this.merchantStatistics.add(merchantStatistic);
     }
 }

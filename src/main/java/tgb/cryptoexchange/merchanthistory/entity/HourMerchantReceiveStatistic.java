@@ -12,8 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = "details")
-@ToString(exclude = "details")
+@EqualsAndHashCode(exclude = "statistic")
+@ToString(exclude = "statistic")
 public class HourMerchantReceiveStatistic {
 
     @Id
@@ -23,7 +23,7 @@ public class HourMerchantReceiveStatistic {
     private String merchant;
 
     @ManyToOne
-    private HourDetailsStatistic details;
+    private HourDetailsStatistic statistic;
 
     private Duration avgDuration;
 
