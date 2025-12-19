@@ -29,7 +29,7 @@ public class HourMerchantReceiveStatisticService {
         ));
         merchantStatistic.setCount(merchantAttempts.size());
         merchantStatistic.setSuccessCount(statisticCalculateService.count(merchantAttempts, MerchantAttempt::isSuccess));
-        merchantStatistic.setSuccessCount(statisticCalculateService.count(merchantAttempts, MerchantAttempt::isError));
+        merchantStatistic.setErrorCount(statisticCalculateService.count(merchantAttempts, MerchantAttempt::isError));
         buildMerchantReceiveDurations(merchantStatistic, merchantAttempts);
         return merchantStatistic;
     }

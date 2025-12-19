@@ -2,6 +2,7 @@ package tgb.cryptoexchange.merchanthistory.service;
 
 import org.junit.jupiter.api.Test;
 import tgb.cryptoexchange.merchanthistory.entity.DetailsReceiveMonitor;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantAttempt;
 import tgb.cryptoexchange.merchanthistory.entity.embeddable.AmountRange;
 
 import java.time.Duration;
@@ -11,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StatisticCalculateServiceTest {
 
@@ -136,5 +136,46 @@ class StatisticCalculateServiceTest {
     void sortByAmountRangeShouldReturnEmptyMapIfNoObjects() {
         List<DetailsReceiveMonitor> monitors = new ArrayList<>();
         assertEquals(0, statisticCalculateService.sortByAmountRange(monitors, DetailsReceiveMonitor::getAmount).size());
+    }
+
+    @Test
+    void sortByMerchantShouldReturnEmptyMapIfNoObjects() {
+        List<DetailsReceiveMonitor> monitors = new ArrayList<>();
+        assertEquals(0, statisticCalculateService.sortByMerchant(monitors).size());
+    }
+
+    @Test
+    void sortByMerchantShouldSortAttempts() {
+        List<DetailsReceiveMonitor> monitors = new ArrayList<>();
+        monitors.add(DetailsReceiveMonitor.builder().attempts(List.of(
+                MerchantAttempt.builder().merchant("ALFA_TEAM").build(),
+                MerchantAttempt.builder().merchant("BIT_ZONE").build(),
+                MerchantAttempt.builder().merchant("ALFA_TEAM").build(),
+                MerchantAttempt.builder().merchant("BIT_ZONE").build()
+        )).build());
+        monitors.add(DetailsReceiveMonitor.builder().attempts(List.of(
+                MerchantAttempt.builder().merchant("EVO_PAY").build()
+        )).build());
+        monitors.add(DetailsReceiveMonitor.builder().attempts(List.of(
+                MerchantAttempt.builder().merchant("EVO_PAY").build(),
+                MerchantAttempt.builder().merchant("ALFA_TEAM").build(),
+                MerchantAttempt.builder().merchant("EVO_PAY").build(),
+                MerchantAttempt.builder().merchant("ALFA_TEAM").build()
+        )).build());
+        monitors.add(DetailsReceiveMonitor.builder().attempts(List.of(
+                MerchantAttempt.builder().merchant("BIT_ZONE").build(),
+                MerchantAttempt.builder().merchant("BIT_ZONE").build(),
+                MerchantAttempt.builder().merchant("BIT_ZONE").build(),
+                MerchantAttempt.builder().merchant("BIT_ZONE").build()
+        )).build());
+        Map<String, List<MerchantAttempt>> actual = statisticCalculateService.sortByMerchant(monitors);
+        assertEquals(3, actual.size());
+
+        assertTrue(actual.containsKey("ALFA_TEAM"));
+        assertEquals(4, actual.get("ALFA_TEAM").size());
+        assertTrue(actual.containsKey("EVO_PAY"));
+        assertEquals(3, actual.get("EVO_PAY").size());
+        assertTrue(actual.containsKey("BIT_ZONE"));
+        assertEquals(6, actual.get("BIT_ZONE").size());
     }
 }

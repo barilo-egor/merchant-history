@@ -40,7 +40,7 @@ public class StatisticBuildService {
                 ));
         for (Map.Entry<Instant, List<DetailsReceiveMonitor>> entry : groupedByHour.entrySet()) {
             log.debug("Создание статистики для часа {}. Количество мониторов {}.", entry.getKey(), entry.getValue().size());
-            hourDetailsStatisticService.create(entry.getKey(), monitors);
+            hourDetailsStatisticService.create(entry.getKey(), entry.getValue());
             log.debug("Создание статистики для часа {} сформирована.", entry.getKey());
         }
         log.debug("Удаление агрегированных мониторов.");

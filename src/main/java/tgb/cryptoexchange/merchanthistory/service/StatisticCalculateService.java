@@ -1,6 +1,8 @@
 package tgb.cryptoexchange.merchanthistory.service;
 
 import org.springframework.stereotype.Service;
+import tgb.cryptoexchange.merchanthistory.entity.DetailsReceiveMonitor;
+import tgb.cryptoexchange.merchanthistory.entity.MerchantAttempt;
 import tgb.cryptoexchange.merchanthistory.entity.embeddable.AmountRange;
 
 import java.time.Duration;
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 @Service
 public class StatisticCalculateService {
@@ -47,4 +50,9 @@ public class StatisticCalculateService {
         return result;
     }
 
+    public Map<String, List<MerchantAttempt>> sortByMerchant(List<DetailsReceiveMonitor> monitors) {
+        return monitors.stream()
+                .flatMap(monitor -> monitor.getAttempts().stream())
+                .collect(Collectors.groupingBy(MerchantAttempt::getMerchant));
+    }
 }

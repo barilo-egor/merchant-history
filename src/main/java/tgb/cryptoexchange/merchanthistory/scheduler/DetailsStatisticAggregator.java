@@ -9,6 +9,7 @@ import tgb.cryptoexchange.merchanthistory.service.StatisticBuildService;
 @Component
 @Slf4j
 public class DetailsStatisticAggregator {
+
     private final StatisticBuildService statisticBuildService;
 
     public DetailsStatisticAggregator(StatisticBuildService statisticBuildService) {

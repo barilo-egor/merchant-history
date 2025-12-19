@@ -11,7 +11,6 @@ import tgb.cryptoexchange.merchanthistory.repository.HourDetailsStatisticReposit
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class HourDetailsStatisticService {
@@ -63,9 +62,7 @@ public class HourDetailsStatisticService {
 
     private void buildHourMerchantReceiveStatistics(HourDetailsStatistic hourDetailsStatistic,
                                                     List<DetailsReceiveMonitor> monitors) {
-        Map<String, List<MerchantAttempt>> merchantsAttempts = monitors.stream()
-                .flatMap(monitor -> monitor.getAttempts().stream())
-                .collect(Collectors.groupingBy(MerchantAttempt::getMerchant));
+        Map<String, List<MerchantAttempt>> merchantsAttempts = statisticCalculateService.sortByMerchant(monitors);
         for (Map.Entry<String, List<MerchantAttempt>> entry : merchantsAttempts.entrySet()) {
             HourMerchantReceiveStatistic merchantStatistic = hourMerchantReceiveStatisticService.build(entry.getKey(), entry.getValue());
             hourDetailsStatistic.addMerchantStatistic(merchantStatistic);
