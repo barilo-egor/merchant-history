@@ -12,3 +12,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+statistic:
+  cron: "0 0 * * * *"

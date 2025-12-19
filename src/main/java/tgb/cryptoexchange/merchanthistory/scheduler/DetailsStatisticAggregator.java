@@ -16,7 +16,7 @@ public class DetailsStatisticAggregator {
         this.statisticBuildService = statisticBuildService;
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "${statistic.cron}")
     @Transactional
     public void aggregate() {
         try {
