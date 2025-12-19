@@ -2,6 +2,9 @@ package tgb.cryptoexchange.merchanthistory.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.DurationSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serializer;
@@ -16,8 +19,10 @@ public class HourDetailsStatisticDTO {
 
     private Long id;
 
+    @JsonSerialize(using = InstantSerializer.class)
     private Instant startTime;
 
+    @JsonSerialize(using = DurationSerializer.class)
     private Duration avgDuration;
 
     private Integer count;
@@ -33,6 +38,7 @@ public class HourDetailsStatisticDTO {
 
         private Long id;
 
+        @JsonSerialize(using = DurationSerializer.class)
         private Duration duration;
 
         private AmountRange amountRange;
@@ -45,6 +51,7 @@ public class HourDetailsStatisticDTO {
 
         private String merchant;
 
+        @JsonSerialize(using = DurationSerializer.class)
         private Duration avgDuration;
 
         private List<MerchantReceiveDuration> receiveDurations;
@@ -60,6 +67,7 @@ public class HourDetailsStatisticDTO {
 
             private Long id;
 
+            @JsonSerialize(using = DurationSerializer.class)
             private Duration duration;
 
             private AmountRange amountRange;
