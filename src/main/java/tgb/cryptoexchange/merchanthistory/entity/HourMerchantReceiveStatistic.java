@@ -1,0 +1,44 @@
+package tgb.cryptoexchange.merchanthistory.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode(exclude = "statistic")
+@ToString(exclude = "statistic")
+public class HourMerchantReceiveStatistic {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String merchant;
+
+    @ManyToOne
+    private HourDetailsStatistic statistic;
+
+    private Duration avgDuration;
+
+    @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<MerchantReceiveDuration> receiveDurations = new ArrayList<>();
+
+    private Integer count;
+
+    private Integer successCount;
+
+    private Integer errorCount;
+
+    public void addMerchantReceiveDuration(MerchantReceiveDuration duration) {
+        duration.setMerchantStatistic(this);
+        this.receiveDurations.add(duration);
+    }
+}
