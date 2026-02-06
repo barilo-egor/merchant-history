@@ -12,8 +12,3 @@ kafka:
   topic:
     merchant-details:
       receive:
-      monitor:
-    merchant-history:
-      statistic:
-statistic:
-  cron: "0 0 * * * *"
