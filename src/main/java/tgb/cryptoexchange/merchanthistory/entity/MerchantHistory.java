@@ -67,4 +67,9 @@ public class MerchantHistory {
      * Реквизиты
      */
     private String details;
+
+    /**
+     * Ссылка на qr/платежку
+     */
+    private String paymentLink;
 }

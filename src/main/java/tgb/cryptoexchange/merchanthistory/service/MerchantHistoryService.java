@@ -34,6 +34,7 @@ public class MerchantHistoryService {
         merchantHistory.setMerchantAmount(event.getMerchantAmount());
         merchantHistory.setMethod(event.getMethod());
         merchantHistory.setDetails(event.getDetails());
+        merchantHistory.setPaymentLink(event.getPaymentLink());
         merchantHistoryRepository.save(merchantHistory);
     }
 
