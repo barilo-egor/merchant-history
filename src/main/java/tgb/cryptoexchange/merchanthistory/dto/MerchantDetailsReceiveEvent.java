@@ -63,6 +63,11 @@ public class MerchantDetailsReceiveEvent {
      */
     private String details;
 
+    /**
+     * Ссылка на qr/платежку
+     */
+    private String paymentLink;
+
     public static class KafkaDeserializer implements Deserializer<MerchantDetailsReceiveEvent> {
 
         private final ObjectMapper objectMapper = new ObjectMapper()
