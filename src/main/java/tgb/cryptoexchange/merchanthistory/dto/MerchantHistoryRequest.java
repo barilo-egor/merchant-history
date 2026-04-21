@@ -29,7 +29,13 @@ public class MerchantHistoryRequest {
 
     private Instant createdAtFrom;
 
+    private Instant createdAtTo;
+
+    private Instant createdAt;
+
     private Long userId;
+
+    private String initiatorApp;
 
     public List<Predicate> toPredicates(Root<MerchantHistory> root, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
@@ -41,6 +47,9 @@ public class MerchantHistoryRequest {
         }
         if (Objects.nonNull(createdAtFrom)) {
             predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), createdAtFrom));
+        }
+        if (Objects.nonNull(createdAtTo)) {
+            predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), createdAtTo));
         }
         if (Objects.nonNull(userId)) {
             predicates.add(cb.equal(root.get("userId"), userId));
