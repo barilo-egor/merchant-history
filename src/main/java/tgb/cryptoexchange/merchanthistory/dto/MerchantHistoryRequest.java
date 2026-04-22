@@ -54,6 +54,9 @@ public class MerchantHistoryRequest {
         if (Objects.nonNull(userId)) {
             predicates.add(cb.equal(root.get("userId"), userId));
         }
+        if (Objects.nonNull(initiatorApp)) {
+            predicates.add(cb.equal(root.get("initiatorApp"), initiatorApp));
+        }
         return predicates;
     }
 }
