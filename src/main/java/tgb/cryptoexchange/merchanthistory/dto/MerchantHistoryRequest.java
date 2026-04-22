@@ -31,8 +31,6 @@ public class MerchantHistoryRequest {
 
     private Instant createdAtTo;
 
-    private Instant createdAt;
-
     private Long userId;
 
     private String initiatorApp;
