@@ -97,4 +97,19 @@ class MerchantHistoryServiceDataJpaTest {
         assertEquals(1, actual.getTotalElements());
         assertEquals(398543096L, actual.getContent().getFirst().getUserId());
     }
+
+    @Test
+    void findAllByDateShouldReturnRecordIfOrderIdMatch() {
+        MerchantHistoryRequest request = new MerchantHistoryRequest();
+        request.setCreatedAtFrom(Instant.parse("2026-04-22T00:00:00Z"));
+        request.setCreatedAtTo(Instant.parse("2026-04-22T23:59:59Z"));
+        MerchantHistory merchantHistory = new MerchantHistory();
+        merchantHistory.setCreatedAt(Instant.parse("2026-04-22T23:00:00Z"));
+        MerchantHistory merchantHistory2 = new MerchantHistory();
+        merchantHistory2.setCreatedAt(Instant.parse("2026-04-22T01:00:00Z"));
+        merchantHistoryRepository.save(merchantHistory);
+        merchantHistoryRepository.save(merchantHistory2);
+        Page<MerchantHistoryDTO> actual = merchantHistoryService.findAll(PageRequest.of(0, 10), request);
+        assertEquals(2, actual.getTotalElements());
+    }
 }
