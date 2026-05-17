@@ -18,7 +18,7 @@ pipeline {
             steps {
                 sshagent([env.SSH_CRED_ID]) {
                     sh "scp -P ${SSH_PORT} build/libs/merchant-history.jar ${SSH_USER}@${MERCHANT_HISTORY_DEPLOY_HOST}:${MERCHANT_HISTORY_DEPLOY_PATH}/"
-                    sh "ssh -p ${SSH_PORT} ${SSH_USER}@${MERCHANT_HISTORY_DEPLOY_HOST} 'cd /srv/merchant-history && docker rollout --wait 60 --timeout 60 withdrawal'"
+                    sh "ssh -p ${SSH_PORT} ${SSH_USER}@${MERCHANT_HISTORY_DEPLOY_HOST} 'cd /srv/merchant-history && docker rollout --wait 60 --timeout 60 merchant-history'"
                 }
             }
         }
