@@ -69,15 +69,20 @@ public class MerchantHistoryRequest {
         if (Objects.nonNull(details)) {
             predicates.add(cb.like(root.get("details"), details));
         }
+        List<Predicate> amountPredicates = new ArrayList<>();
         if (Objects.nonNull(merchantAmount)) {
-            predicates.add(cb.equal(root.get("merchantAmount"), merchantAmount));
+            amountPredicates.add(cb.equal(root.get("merchantAmount"), merchantAmount));
         }
         if (Objects.nonNull(requestedAmount)) {
-            predicates.add(cb.equal(root.get("requestedAmount"), requestedAmount));
+            amountPredicates.add(cb.equal(root.get("requestedAmount"), requestedAmount));
+        }
+        if (!amountPredicates.isEmpty()) {
+            predicates.add(cb.or(amountPredicates.toArray(new Predicate[0])));
         }
         if (!CollectionUtils.isEmpty(merchants)) {
             predicates.add(root.get("merchant").in(merchants));
         }
         return predicates;
     }
+
 }
