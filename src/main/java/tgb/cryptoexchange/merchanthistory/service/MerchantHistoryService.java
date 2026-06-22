@@ -2,7 +2,9 @@ package tgb.cryptoexchange.merchanthistory.service;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantDetailsReceiveEvent;
 import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryDTO;
@@ -46,7 +48,19 @@ public class MerchantHistoryService {
         merchantHistoryRepository.deleteAll(merchantHistory);
     }
 
-    public Page<MerchantHistoryDTO> findAll(Pageable pageable, MerchantHistoryRequest request) {
+    public Page<MerchantHistoryDTO> findAll(MerchantHistoryRequest request) {
+        String[] sortParams = request.getSort().split(",");
+        String sortField = sortParams[0];
+
+        Sort.Direction direction = (sortParams.length > 1 && "asc".equalsIgnoreCase(sortParams[1]))
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(
+                request.getPageNumber(),
+                request.getPageSize(),
+                Sort.by(direction, sortField)
+        );
         return merchantHistoryRepository.findAll(
                 (root, query, criteriaBuilder) -> criteriaBuilder.and(
                         request.toPredicates(root, criteriaBuilder).toArray(new Predicate[0])

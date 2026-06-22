@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -48,7 +47,7 @@ class MerchantHistoryControllerTest {
     void getShouldReturnEmptyArrayIfHistoriesNotFound() throws Exception {
         when(page.getContent()).thenReturn(new ArrayList<>());
         when(page.getTotalElements()).thenReturn(0L);
-        when(merchantHistoryService.findAll(any(), any())).thenReturn(page);
+        when(merchantHistoryService.findAll(any())).thenReturn(page);
         mockMvc.perform(get("/merchant-history"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
@@ -65,9 +64,8 @@ class MerchantHistoryControllerTest {
                                     Long userId) throws Exception {
         when(page.getContent()).thenReturn(new ArrayList<>());
         when(page.getTotalElements()).thenReturn(0L);
-        when(merchantHistoryService.findAll(any(), any())).thenReturn(page);
+        when(merchantHistoryService.findAll(any(MerchantHistoryRequest.class))).thenReturn(page);
         ArgumentCaptor<MerchantHistoryRequest> requestCaptor = ArgumentCaptor.forClass(MerchantHistoryRequest.class);
-        ArgumentCaptor<PageRequest> pageRequestCaptor = ArgumentCaptor.forClass(PageRequest.class);
         mockMvc.perform(get("/merchant-history")
                 .queryParam("pageNumber", String.valueOf(pageNumber))
                 .queryParam("pageSize", String.valueOf(pageSize))
@@ -76,16 +74,15 @@ class MerchantHistoryControllerTest {
                 .queryParam("createdAtFrom", createdAt.toString())
                 .queryParam("userId", String.valueOf(userId))
         );
-        verify(merchantHistoryService).findAll(pageRequestCaptor.capture(), requestCaptor.capture());
+        verify(merchantHistoryService).findAll(requestCaptor.capture());
         MerchantHistoryRequest actualRequest = requestCaptor.getValue();
-        PageRequest actualPageRequest = pageRequestCaptor.getValue();
         assertAll(
                 () -> assertEquals(orderId, actualRequest.getOrderId()),
                 () -> assertEquals(dealId, actualRequest.getDealId()),
                 () -> assertEquals(createdAt, actualRequest.getCreatedAtFrom()),
                 () -> assertEquals(userId, actualRequest.getUserId()),
-                () -> assertEquals(pageNumber, actualPageRequest.getPageNumber()),
-                () -> assertEquals(pageSize, actualPageRequest.getPageSize())
+                () -> assertEquals(pageNumber, actualRequest.getPageNumber()),
+                () -> assertEquals(pageSize, actualRequest.getPageSize())
         );
     }
 
@@ -108,7 +105,7 @@ class MerchantHistoryControllerTest {
             merchantHistoryDTO.setDetails(i + " Bank 1234 1234 1234 1234");
             histories.add(merchantHistoryDTO);
         }
-        when(merchantHistoryService.findAll(any(), any())).thenReturn(page);
+        when(merchantHistoryService.findAll(any())).thenReturn(page);
         when(page.getContent()).thenReturn(histories);
         when(page.getTotalElements()).thenReturn((long) size);
         ResultActions perform = mockMvc.perform(get("/merchant-history"));
