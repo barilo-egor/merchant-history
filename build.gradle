@@ -46,6 +46,7 @@ dependencies {
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2'
 	implementation 'org.springframework.cloud:spring-cloud-config-client'
 	implementation 'tgb.cryptoexchange:common-api:1.1.0'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 	compileOnly 'org.projectlombok:lombok'
