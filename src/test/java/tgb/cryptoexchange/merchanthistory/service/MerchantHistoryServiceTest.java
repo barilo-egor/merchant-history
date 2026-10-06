@@ -30,14 +30,16 @@ class MerchantHistoryServiceTest {
     private MerchantHistoryService merchantHistoryService;
 
     @CsvSource("""
-            17551592595,398395786,banan,ALFA_TEAM,b9519d18-7ecf-47fd-ae74-0eca84d8656e,2500,2502,SBP,ALFA 79879878787
-            17551564636,8050468384,money,WELL_BIT,869b6ba4-fc34-4df5-910c-cf69a05027b9,25300,25301,CARD,Банк развития 1234123412341234
+            17551592595,17551592595,398395786,398395786,banan,ALFA_TEAM,b9519d18-7ecf-47fd-ae74-0eca84d8656e,2500,2502,SBP,ALFA 79879878787
+            17551564636,c5d6f05d-8035-4c30-a68d-af6e8310d6a1,2c5c5549-eea6-479a-8273-015366b6fa41,8050468384,money,WELL_BIT,869b6ba4-fc34-4df5-910c-cf69a05027b9,25300,25301,CARD,Банк развития 1234123412341234
             """)
     @ParameterizedTest
-    void saveShouldSaveMerchantHistoryFromEvent(Long dealId, Long userId, String appId, String merchant, String orderId,
+    void saveShouldSaveMerchantHistoryFromEvent(Long dealId, String operationId, String actorId, Long userId, String appId, String merchant, String orderId,
                                                 Integer requestedAmount, Integer merchantAmount, String method, String details) {
         MerchantDetailsReceiveEvent event = new MerchantDetailsReceiveEvent();
         event.setDealId(dealId);
+        event.setOperationId(operationId);
+        event.setActorId(actorId);
         event.setUserId(userId);
         event.setInitiatorApp(appId);
         event.setMerchant(merchant);
@@ -52,6 +54,8 @@ class MerchantHistoryServiceTest {
         MerchantHistory actual = historyCaptor.getValue();
         assertAll(
                 () -> assertEquals(dealId, actual.getDealId()),
+                () -> assertEquals(operationId, actual.getOperationId()),
+                () -> assertEquals(actorId, actual.getActorId()),
                 () -> assertEquals(userId, actual.getUserId()),
                 () -> assertEquals(appId, actual.getInitiatorApp()),
                 () -> assertEquals(merchant, actual.getMerchant()),

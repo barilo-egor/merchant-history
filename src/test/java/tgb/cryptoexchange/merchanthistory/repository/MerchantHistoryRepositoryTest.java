@@ -33,7 +33,7 @@ class MerchantHistoryRepositoryTest {
         MerchantHistory merchantHistory = new MerchantHistory();
         Instant createdAt = Instant.now().minus(1, ChronoUnit.DAYS);
         merchantHistory.setCreatedAt(createdAt);
-        merchantHistory.setDealId(543L);
+        merchantHistory.setOperationId("543");
         merchantHistoryRepository.save(merchantHistory);
         assertTrue(merchantHistoryRepository.findByCreatedAtBefore(createdAt.minusSeconds(1)).isEmpty());
     }
@@ -43,7 +43,7 @@ class MerchantHistoryRepositoryTest {
         MerchantHistory merchantHistory = new MerchantHistory();
         Instant createdAt = Instant.now().minus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MILLIS);
         merchantHistory.setCreatedAt(createdAt);
-        merchantHistory.setDealId(543L);
+        merchantHistory.setOperationId("543");
         merchantHistoryRepository.save(merchantHistory);
         assertTrue(merchantHistoryRepository.findByCreatedAtBefore(createdAt).isEmpty());
     }
@@ -53,7 +53,7 @@ class MerchantHistoryRepositoryTest {
         MerchantHistory merchantHistory = new MerchantHistory();
         Instant createdAt = Instant.now().minus(1, ChronoUnit.DAYS);
         merchantHistory.setCreatedAt(createdAt);
-        merchantHistory.setDealId(543L);
+        merchantHistory.setOperationId("543");
         merchantHistoryRepository.save(merchantHistory);
         List<MerchantHistory> actual = merchantHistoryRepository.findByCreatedAtBefore(createdAt.plusSeconds(1));
         assertFalse(actual.isEmpty());

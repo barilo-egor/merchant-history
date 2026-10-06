@@ -16,6 +16,16 @@ public class MerchantHistoryDTO {
     private Long dealId;
 
     /**
+     * Идентификатор операции, по которой были получены реквизиты
+     */
+    private String operationId;
+
+    /**
+     * Идентификатор получаетеля реквизитов
+     */
+    private String actorId;
+
+    /**
      * Идентификатор пользователя, для которого были запрошены реквизиты
      */
     private Long userId;
@@ -64,6 +74,8 @@ public class MerchantHistoryDTO {
     public static MerchantHistoryDTO fromEntity(MerchantHistory merchantHistory) {
         MerchantHistoryDTO dto = new MerchantHistoryDTO();
         dto.setDealId(merchantHistory.getDealId());
+        dto.setOperationId(merchantHistory.getOperationId());
+        dto.setActorId(merchantHistory.getActorId());
         dto.setUserId(merchantHistory.getUserId());
         dto.setInitiatorApp(merchantHistory.getInitiatorApp());
         dto.setCreatedAt(merchantHistory.getCreatedAt());

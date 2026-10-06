@@ -27,6 +27,8 @@ public class MerchantHistoryService {
     public void save(MerchantDetailsReceiveEvent event) {
         MerchantHistory merchantHistory = new MerchantHistory();
         merchantHistory.setDealId(event.getDealId());
+        merchantHistory.setOperationId(event.getOperationId());
+        merchantHistory.setActorId(event.getActorId());
         merchantHistory.setUserId(event.getUserId());
         merchantHistory.setInitiatorApp(event.getInitiatorApp());
         merchantHistory.setCreatedAt(event.getCreatedAt());
