@@ -30,11 +30,15 @@ public class MerchantHistoryRequest {
 
     private Long dealId;
 
+    private Long operationId;
+
+    private Long actorId;
+
+    private Long userId;
+
     private Instant createdAtFrom;
 
     private Instant createdAtTo;
-
-    private Long userId;
 
     private String initiatorApp;
 
@@ -53,6 +57,12 @@ public class MerchantHistoryRequest {
         }
         if (Objects.nonNull(dealId)) {
             predicates.add(cb.equal(root.get("dealId"), dealId));
+        }
+        if (Objects.nonNull(operationId)) {
+            predicates.add(cb.equal(root.get("operationId"), operationId));
+        }
+        if (Objects.nonNull(actorId)) {
+            predicates.add(cb.equal(root.get("actorId"), actorId));
         }
         if (Objects.nonNull(createdAtFrom)) {
             predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), createdAtFrom));
