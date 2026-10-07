@@ -60,8 +60,8 @@ class MerchantHistoryControllerTest {
             1,25,a901e865-a408-4269-95d8-7c935fce0d40,17324623466,2025-11-01T00:00:00.000000000Z,9695285239
             """)
     @ParameterizedTest
-    void getShouldPassRequestObject(Integer pageNumber, Integer pageSize, String orderId, Long dealId, Instant createdAt,
-                                    Long userId) throws Exception {
+    void getShouldPassRequestObject(Integer pageNumber, Integer pageSize, String orderId, String operationId, Instant createdAt,
+                                    String actorId) throws Exception {
         when(page.getContent()).thenReturn(new ArrayList<>());
         when(page.getTotalElements()).thenReturn(0L);
         when(merchantHistoryService.findAll(any(MerchantHistoryRequest.class))).thenReturn(page);
@@ -70,17 +70,17 @@ class MerchantHistoryControllerTest {
                 .queryParam("pageNumber", String.valueOf(pageNumber))
                 .queryParam("pageSize", String.valueOf(pageSize))
                 .queryParam("orderId", String.valueOf(orderId))
-                .queryParam("dealId", String.valueOf(dealId))
+                .queryParam("operationId", String.valueOf(operationId))
                 .queryParam("createdAtFrom", createdAt.toString())
-                .queryParam("userId", String.valueOf(userId))
+                .queryParam("actorId", String.valueOf(actorId))
         );
         verify(merchantHistoryService).findAll(requestCaptor.capture());
         MerchantHistoryRequest actualRequest = requestCaptor.getValue();
         assertAll(
                 () -> assertEquals(orderId, actualRequest.getOrderId()),
-                () -> assertEquals(dealId, actualRequest.getDealId()),
+                () -> assertEquals(operationId, actualRequest.getOperationId()),
                 () -> assertEquals(createdAt, actualRequest.getCreatedAtFrom()),
-                () -> assertEquals(userId, actualRequest.getUserId()),
+                () -> assertEquals(actorId, actualRequest.getActorId()),
                 () -> assertEquals(pageNumber, actualRequest.getPageNumber()),
                 () -> assertEquals(pageSize, actualRequest.getPageSize())
         );
@@ -93,8 +93,8 @@ class MerchantHistoryControllerTest {
         Instant now = Instant.now();
         for (long i = 0; i < size; i++) {
             MerchantHistoryDTO merchantHistoryDTO = new MerchantHistoryDTO();
-            merchantHistoryDTO.setDealId(i * 10 + i);
-            merchantHistoryDTO.setUserId(i);
+            merchantHistoryDTO.setOperationId(String.valueOf(i * 10 + i));
+            merchantHistoryDTO.setActorId(String.valueOf(i));
             merchantHistoryDTO.setInitiatorApp("app" + i);
             merchantHistoryDTO.setCreatedAt(now.minusSeconds(i));
             merchantHistoryDTO.setMerchant("MERCHANT_" + i);
@@ -114,8 +114,8 @@ class MerchantHistoryControllerTest {
                     .andExpect(jsonPath("$.success").value(true))
                     .andExpect(jsonPath("$.data").isArray())
                     .andExpect(jsonPath("$.data").isNotEmpty())
-                    .andExpect(jsonPath("$.data[" + i + "].dealId").value(10 * i + i))
-                    .andExpect(jsonPath("$.data[" + i + "].userId").value(i))
+                    .andExpect(jsonPath("$.data[" + i + "].operationId").value(10 * i + i))
+                    .andExpect(jsonPath("$.data[" + i + "].actorId").value(i))
                     .andExpect(jsonPath("$.data[" + i + "].initiatorApp").value("app" + i))
                     .andExpect(jsonPath("$.data[" + i + "].createdAt").value(now.minusSeconds(i).toString()))
                     .andExpect(jsonPath("$.data[" + i + "].merchant").value("MERCHANT_" + i))

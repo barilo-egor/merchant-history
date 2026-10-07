@@ -22,7 +22,7 @@ class MerchantDetailsReceiveTopicListenerTest {
     void receiveShouldSaveEvent() {
         MerchantDetailsReceiveEvent event = new MerchantDetailsReceiveEvent();
         event.setMerchant("ALFA_TEAM");
-        event.setDealId(1755365755L);
+        event.setOperationId("1755365755");
         event.setRequestedAmount(5000);
         event.setMerchantAmount(5000);
         merchantDetailsReceiveTopicListener.receive(event);

@@ -18,9 +18,9 @@ class MerchantHistoriesResponseTest {
             2626637108
             """)
     @ParameterizedTest
-    void merchantHistoryShouldConstructWithMerchantHistoryData(Long dealId) {
+    void merchantHistoryShouldConstructWithMerchantHistoryData(String operationId) {
         MerchantHistoryDTO dto = new MerchantHistoryDTO();
-        dto.setDealId(dealId);
+        dto.setOperationId(operationId);
         List<MerchantHistoryDTO> list = new ArrayList<>();
         list.add(dto);
         assertEquals(dto, new MerchantHistoriesResponse(list).getData().getFirst());

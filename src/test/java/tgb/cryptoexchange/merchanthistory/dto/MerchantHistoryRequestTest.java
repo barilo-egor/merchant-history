@@ -49,14 +49,14 @@ class MerchantHistoryRequestTest {
     }
 
     @Test
-    void toPredicatesShouldAddDealIdPredicate() {
+    void toPredicatesShouldAddOperationIdPredicate() {
         MerchantHistoryRequest request = new MerchantHistoryRequest();
-        request.setDealId(528615L);
-        when(criteriaBuilder.equal(any(), anyLong())).thenReturn(equal);
+        request.setOperationId("528615");
+        when(criteriaBuilder.equal(any(), anyString())).thenReturn(equal);
         List<Predicate> actual = request.toPredicates(root, criteriaBuilder);
 
-        verify(root).get("dealId");
-        verify(criteriaBuilder).equal(any(), eq(528615L));
+        verify(root).get("operationId");
+        verify(criteriaBuilder).equal(any(), eq("528615"));
         assertEquals(1, actual.size());
         assertEquals(equal, actual.getFirst());
     }
@@ -76,14 +76,14 @@ class MerchantHistoryRequestTest {
     }
 
     @Test
-    void toPredicatesShouldAddUserIdPredicate() {
+    void toPredicatesShouldAddActorIdPredicate() {
         MerchantHistoryRequest request = new MerchantHistoryRequest();
-        request.setUserId(396846723L);
-        when(criteriaBuilder.equal(any(), anyLong())).thenReturn(equal);
+        request.setActorId("396846723");
+        when(criteriaBuilder.equal(any(), anyString())).thenReturn(equal);
         List<Predicate> actual = request.toPredicates(root, criteriaBuilder);
 
-        verify(root).get("userId");
-        verify(criteriaBuilder).equal(any(), eq(396846723L));
+        verify(root).get("actorId");
+        verify(criteriaBuilder).equal(any(), eq("396846723"));
         assertEquals(1, actual.size());
         assertEquals(equal, actual.getFirst());
     }
