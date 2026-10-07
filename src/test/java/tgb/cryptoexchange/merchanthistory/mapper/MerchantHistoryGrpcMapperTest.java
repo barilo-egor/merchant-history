@@ -69,9 +69,7 @@ class MerchantHistoryGrpcMapperTest {
                 () -> assertEquals("payment details", actual.getDetails()),
                 () -> assertEquals(List.of("MERCHANT_A", "MERCHANT_B"), actual.getMerchants()),
                 () -> assertEquals(5000, actual.getMerchantAmount()),
-                () -> assertEquals(5500, actual.getRequestedAmount()),
-                () -> assertNull(actual.getDealId()),
-                () -> assertNull(actual.getUserId())
+                () -> assertEquals(5500, actual.getRequestedAmount())
         );
     }
 
@@ -83,10 +81,8 @@ class MerchantHistoryGrpcMapperTest {
         assertEquals(20, actual.getPageSize());
         assertEquals("createdAt,desc", actual.getSort());
         assertNull(actual.getOrderId());
-        assertNull(actual.getDealId());
         assertNull(actual.getOperationId());
         assertNull(actual.getActorId());
-        assertNull(actual.getUserId());
         assertNull(actual.getCreatedAtFrom());
         assertNull(actual.getCreatedAtTo());
         assertNull(actual.getInitiatorApp());

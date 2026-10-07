@@ -103,9 +103,7 @@ class MerchantHistoryControllerGrpcTest {
                 () -> assertEquals(actorId, actual.getActorId()),
                 () -> assertEquals(Instant.ofEpochMilli(createdAtEpoch), actual.getCreatedAtFrom()),
                 () -> assertEquals(pageNumber, actual.getPageNumber()),
-                () -> assertEquals(pageSize, actual.getPageSize()),
-                () -> assertNull(actual.getDealId()),
-                () -> assertNull(actual.getUserId())
+                () -> assertEquals(pageSize, actual.getPageSize())
         );
 
         verify(responseObserver).onNext(any());
@@ -119,10 +117,8 @@ class MerchantHistoryControllerGrpcTest {
         Instant now = Instant.ofEpochMilli(1730000000000L);
         for (long i = 0; i < size; i++) {
             MerchantHistoryDTO dto = new MerchantHistoryDTO();
-            dto.setDealId(10L * i + i);
             dto.setOperationId("op-" + (100L + i));
             dto.setActorId("act-" + (200L + i));
-            dto.setUserId(i);
             dto.setInitiatorApp("app" + i);
             dto.setCreatedAt(now.minusSeconds(i));
             dto.setMerchant("MERCHANT_" + i);
