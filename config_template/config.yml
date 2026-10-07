@@ -7,6 +7,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto:
+  grpc:
+    server:
+      host:
+      port:
 kafka:
   group-id:
   topic:
