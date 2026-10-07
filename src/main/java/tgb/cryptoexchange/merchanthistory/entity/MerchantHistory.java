@@ -19,11 +19,6 @@ public class MerchantHistory {
     private Long id;
 
     /**
-     * Идентификатор сделки, по которому были запрошены реквизиты
-     */
-    private Long dealId;
-
-    /**
      * Идентификатор операции, по которой были получены реквизиты
      */
     private String operationId;
@@ -32,11 +27,6 @@ public class MerchantHistory {
      * Идентификатор получаетеля реквизитов
      */
     private String actorId;
-
-    /**
-     * Идентификатор пользователя, для которого были запрошены реквизиты
-     */
-    private Long userId;
 
     /**
      * Идентификатор приложения, запросившее реквизиты

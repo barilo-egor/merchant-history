@@ -67,17 +67,17 @@ class MerchantHistoryServiceDataJpaTest {
     }
 
     @Test
-    void findAllShouldReturnRecordIfDealIdMatch() {
+    void findAllShouldReturnRecordIfOperationIdMatch() {
         MerchantHistoryRequest request = new MerchantHistoryRequest();
         request.setPageSize(10);
         request.setPageNumber(0);
-        request.setDealId(500414L);
+        request.setOperationId("500414");
         MerchantHistory merchantHistory = new MerchantHistory();
-        merchantHistory.setDealId(500414L);
+        merchantHistory.setOperationId("500414");
         merchantHistoryRepository.save(merchantHistory);
         Page<MerchantHistoryDTO> actual = merchantHistoryService.findAll(request);
         assertEquals(1, actual.getTotalElements());
-        assertEquals(500414L, actual.getContent().getFirst().getDealId());
+        assertEquals("500414", actual.getContent().getFirst().getOperationId());
     }
 
     @Test
@@ -96,17 +96,17 @@ class MerchantHistoryServiceDataJpaTest {
     }
 
     @Test
-    void findAllShouldReturnRecordIfUserIdMatch() {
+    void findAllShouldReturnRecordIfActorIdMatch() {
         MerchantHistoryRequest request = new MerchantHistoryRequest();
         request.setPageSize(10);
         request.setPageNumber(0);
-        request.setUserId(398543096L);
+        request.setActorId("398543096");
         MerchantHistory merchantHistory = new MerchantHistory();
-        merchantHistory.setUserId(398543096L);
+        merchantHistory.setActorId("398543096");
         merchantHistoryRepository.save(merchantHistory);
         Page<MerchantHistoryDTO> actual = merchantHistoryService.findAll(request);
         assertEquals(1, actual.getTotalElements());
-        assertEquals(398543096L, actual.getContent().getFirst().getUserId());
+        assertEquals("398543096", actual.getContent().getFirst().getActorId());
     }
 
     @Test
