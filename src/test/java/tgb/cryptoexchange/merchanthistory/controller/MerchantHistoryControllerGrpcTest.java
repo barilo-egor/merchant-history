@@ -174,4 +174,26 @@ class MerchantHistoryControllerGrpcTest {
         verify(responseObserver, never()).onCompleted();
     }
 
+    @Test
+    void getHistoryShouldReturnTotal() {
+        MerchantHistoryDTO dto = new MerchantHistoryDTO();
+        dto.setOperationId("op-1");
+
+        when(page.getContent()).thenReturn(List.of(dto));
+        when(page.getTotalElements()).thenReturn(150L);
+        when(merchantHistoryService.findAll(any())).thenReturn(page);
+
+        controller.getHistory(MerchantHistoryRequestGrpc.getDefaultInstance(), responseObserver);
+
+        ArgumentCaptor<MerchantHistoryResponseGrpc> responseCaptor =
+                ArgumentCaptor.forClass(MerchantHistoryResponseGrpc.class);
+        verify(responseObserver).onNext(responseCaptor.capture());
+        verify(responseObserver).onCompleted();
+
+        MerchantHistoryResponseGrpc actualResponse = responseCaptor.getValue();
+        assertNotNull(actualResponse);
+        assertEquals(1, actualResponse.getResponseCount());
+        assertEquals(150, actualResponse.getTotal());
+    }
+
 }

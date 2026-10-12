@@ -18,8 +18,6 @@ import tgb.cryptoexchange.merchanthistory.dto.MerchantHistoryRequest;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -116,16 +114,15 @@ public class MerchantHistoryGrpcMapper {
     }
 
     public MerchantHistoryResponseGrpc toResponse(Page<MerchantHistoryDTO> page) {
-        return toResponse(Objects.nonNull(page) ? page.getContent() : Collections.emptyList());
-    }
-
-    public MerchantHistoryResponseGrpc toResponse(List<MerchantHistoryDTO> dtoList) {
-        MerchantHistoryResponseGrpc.Builder builder = MerchantHistoryResponseGrpc.newBuilder();
-        if (Objects.nonNull(dtoList)) {
-            for (MerchantHistoryDTO dto : dtoList) {
-                builder.addResponse(toResponseDto(dto));
-            }
+        if (Objects.isNull(page)) {
+            return MerchantHistoryResponseGrpc.getDefaultInstance();
         }
+        MerchantHistoryResponseGrpc.Builder builder = MerchantHistoryResponseGrpc.newBuilder();
+        for (MerchantHistoryDTO dto : page.getContent()) {
+            builder.addResponse(toResponseDto(dto));
+        }
+
+        builder.setTotal((int) page.getTotalElements());
         return builder.build();
     }
 

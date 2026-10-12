@@ -5,10 +5,7 @@ import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import tgb.cryptoexchange.grpc.generated.MerchantHistoryRequestGrpc;
 import tgb.cryptoexchange.grpc.generated.MerchantHistoryResponseDTO;
 import tgb.cryptoexchange.grpc.generated.MerchantHistoryResponseGrpc;
@@ -177,9 +174,25 @@ class MerchantHistoryGrpcMapperTest {
         assertEquals(2, response.getResponseCount());
         assertEquals("op-1", response.getResponse(0).getOperationId().getValue());
         assertEquals("op-2", response.getResponse(1).getOperationId().getValue());
+        assertEquals(2, response.getTotal());
 
         MerchantHistoryResponseGrpc emptyResponse = mapper.toResponse((Page<MerchantHistoryDTO>) null);
         assertEquals(0, emptyResponse.getResponseCount());
+        assertEquals(0, emptyResponse.getTotal());
+    }
+
+    @Test
+    void toResponseShouldMapPageWithTotal() {
+        MerchantHistoryDTO dto = new MerchantHistoryDTO();
+        dto.setOperationId("op-1");
+
+        PageRequest pageRequest = PageRequest.of(2, 15, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<MerchantHistoryDTO> page = new PageImpl<>(List.of(dto), pageRequest, 100);
+
+        MerchantHistoryResponseGrpc response = mapper.toResponse(page);
+
+        assertEquals(1, response.getResponseCount());
+        assertEquals(100, response.getTotal());
     }
 
     @Test
