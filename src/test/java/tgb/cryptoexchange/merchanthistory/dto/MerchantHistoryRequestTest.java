@@ -5,6 +5,8 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tgb.cryptoexchange.merchanthistory.entity.MerchantHistory;
@@ -86,5 +88,25 @@ class MerchantHistoryRequestTest {
         verify(criteriaBuilder).equal(any(), eq("396846723"));
         assertEquals(1, actual.size());
         assertEquals(equal, actual.getFirst());
+    }
+
+    @ParameterizedTest
+    @CsvSource(delimiter = '|', value = {
+            "2200|%2200%",
+            "2200 1234 5678 9010|%2200 1234 5678 9010%",
+            "+79001234567|%+79001234567%",
+            "50%_off|%50!%!_off%",
+            "ok!|%ok!!%"
+    })
+    void toPredicatesShouldAddDetailsContainsPredicate(String details, String expectedPattern) {
+        MerchantHistoryRequest request = new MerchantHistoryRequest();
+        request.setDetails(details);
+        when(criteriaBuilder.like(any(), anyString(), anyChar())).thenReturn(like);
+        List<Predicate> actual = request.toPredicates(root, criteriaBuilder);
+
+        verify(root).get("details");
+        verify(criteriaBuilder).like(any(), eq(expectedPattern), eq('!'));
+        assertEquals(1, actual.size());
+        assertEquals(like, actual.getFirst());
     }
 }
