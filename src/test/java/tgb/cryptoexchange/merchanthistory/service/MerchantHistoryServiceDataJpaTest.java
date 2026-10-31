@@ -2,6 +2,8 @@ package tgb.cryptoexchange.merchanthistory.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -126,4 +128,24 @@ class MerchantHistoryServiceDataJpaTest {
         assertEquals(2, actual.getTotalElements());
     }
 
+    @ParameterizedTest
+    @CsvSource(delimiter = '|', value = {
+            "2200 1234 5678 9010|2200|true",
+            "2200 1234 5678 9010|5678|true",
+            "+79001234567|9001|true",
+            "2200 1234 5678 9010|2201|false",
+            "2200 1234 5678 9010|22%10|false",
+            "2200 1234 5678 9010|2200_1234|false",
+            "50%_off|0%_o|true",
+            "ok!done|k!d|true"
+    })
+    void findAllShouldMatchDetailsBySubstring(String details, String filter, boolean found) {
+        MerchantHistory merchantHistory = new MerchantHistory();
+        merchantHistory.setDetails(details);
+        merchantHistoryRepository.save(merchantHistory);
+        MerchantHistoryRequest request = new MerchantHistoryRequest();
+        request.setDetails(filter);
+        Page<MerchantHistoryDTO> actual = merchantHistoryService.findAll(request);
+        assertEquals(found ? 1 : 0, actual.getTotalElements());
+    }
 }

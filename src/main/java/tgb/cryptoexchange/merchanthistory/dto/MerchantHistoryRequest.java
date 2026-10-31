@@ -17,6 +17,8 @@ import java.util.Objects;
 @Data
 public class MerchantHistoryRequest {
 
+    private static final char LIKE_ESCAPE = '!';
+
     @Min(0)
     private Integer pageNumber = 0;
 
@@ -67,7 +69,7 @@ public class MerchantHistoryRequest {
             predicates.add(cb.equal(root.get("initiatorApp"), initiatorApp));
         }
         if (Objects.nonNull(details)) {
-            predicates.add(cb.like(root.get("details"), details));
+            predicates.add(cb.like(root.get("details"), containsPattern(details), LIKE_ESCAPE));
         }
         List<Predicate> amountPredicates = new ArrayList<>();
         if (Objects.nonNull(merchantAmount)) {
@@ -83,6 +85,13 @@ public class MerchantHistoryRequest {
             predicates.add(root.get("merchant").in(merchants));
         }
         return predicates;
+    }
+
+    private static String containsPattern(String value) {
+        String escaped = value.replace("!", "!!")
+                .replace("%", "!%")
+                .replace("_", "!_");
+        return "%" + escaped + "%";
     }
 
 }
